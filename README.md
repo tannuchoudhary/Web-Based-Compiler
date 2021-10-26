@@ -1,5 +1,4 @@
 # Web-based Compiler
-It is an implementation of compilex module. It provides an interface to run your programs on the browser.
 
 ## Installation instruction
 ```bash
