@@ -3,8 +3,8 @@
 ## Installation instruction
 ```bash
 sudo apt install nodejs npm  # If not already installed
-git clone https://tannuchoudhary.github.io/Web-Based-Compiler/
-cd web-based-compiler
+git clone https://github.com/tannuchoudhary/Web-Based-Compiler
+cd Web-Based-Compiler
 npm install  # To install the required dependencies
 node app.js
 ```
