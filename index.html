@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <title>Editor</title>
+    </head>
+    <body>
+        <form id="myform" method="post" action="/compilecode">
+            <div class="container-fluid">
+                <br><br>
+                <h4 class="text-center text-success">ONLINE COMPLIER</h4>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="float-left">
+                                    <h3 class="text-info">
+                                        Code Editor
+                                    </h3>
+                                </div>
+                                <div class="float-right">
+                                    <div class="form-group">
+                                        <input type="button" id="Clear" class="btn btn-primary btn-sm" value="Clear">
+                                        <input type="submit" id="submit" class="btn btn-success btn-sm" value="Run" name="submit">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="code" name="code" style="min-height:64vh;font-size:15px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="card" style="min-height:40vh;">
+                            <div class="card-header">
+                                <h3 class="text-info">
+                                    Input screen
+                                </h3>
+                                Language : 
+                                <select id="lang" name="lang">
+                                    <option value="Python">Python</option>
+                                    <option value="C">C</option>
+                                    <option value="Java">Java</option>
+                                </select>
+                                &emsp;Compile With Input :
+                                <input type="radio" name="inputRadio" id="inputRadio" value="true"/>Yes
+                                <input type="radio" name="inputRadio" id="inputRadio" value="false" checked="checked"/>No
+                                <br />
+                            </div>
+                            <div class="card-body" id="input" name="input"></div>
+                        </div>
+                        <div class="card" style="min-height:40vh;">
+                            <div class="card-header">
+                                <h3 class="text-info">
+                                    Output screen
+                                </h3>
+                            </div>
+                            <div class="card-body" id="output" name="output"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="script/jquery-3.1.1.min.js" type="application/javascript" charset="utf-8"></script>
+            <script src="script/bootstrap.min.js" type="application/javascript" charset="utf-8"></script>
+            <script src="script/ace.js" type="application/javascript" charset="utf-8"></script>
+            <script type="text/javascript">
+                var inputScreen = ace.edit("input");
+                inputScreen.setValue('');
+                var outputScreen = ace.edit("output");
+                outputScreen.setValue('');
+                     var e=ace.edit('code');     
+                       e.getSession().setMode("ace/mode/python")//set the language 
+                       e.setTheme("ace/theme/monokai")//editor theme
+                // set init values or basic code for html
+                // e.session.setMode(new JavaScriptMode());
+                       e.setValue(`print("Hello World!")`)
+                // make complie or run
+                $(document).ready(function(){
+                 $(document).on("click","#Clear",function(){
+                   e.setValue("");
+                 })
+                });
+
+		// On sumitting the form
+                $('#myform').on('submit', function(event){
+                event.preventDefault();  // Prevent from posting as HTML form
+                $.ajax({
+                    url : '/compilecode',
+                    type : 'POST',
+                    data : { code : ace.edit("code").getValue(),
+                input: ace.edit("input").getValue(),
+                inputRadio : $("input[name='inputRadio']:checked").val(),
+                lang : $('#lang option:selected').text()},
+                    success : function(result){
+		if ($('#lang option:selected').text()=="Python")
+		{
+			if (result.hasOwnProperty('output'))
+			{
+                		outputScreen.setValue(result["output"]);
+			}
+			else
+			{
+                		outputScreen.setValue(result["error"]);
+			}
+                	//outputScreen.setValue(JSON.stringify(result));
+		}
+		else
+		{
+                	outputScreen.setValue(result);
+		}
+                    }
+                });
+                });
+                
+                // To change the sample code on changing language
+                $("#lang").on('change', function() {
+                     var e=ace.edit('code');     
+                if ($(this).val() == 'C'){
+                       e.setValue(`#include <stdio.h>
+ 
+int main()
+{
+	printf("Hello World!");
+	return 0;
+}`)
+                       e.getSession().setMode("ace/mode/c_cpp")//set the language 
+                } else if ($(this).val() == 'Java'){
+                       e.setValue(`public class Main
+{
+	public static void main(String[] args) {
+	System.out.println("Hello World!");
+}
+}`)
+                       e.getSession().setMode("ace/mode/java")//set the language 
+                }
+                else if ($(this).val() == 'Python'){
+                       e.setValue(`print("Hello World!")`)
+                       e.getSession().setMode("ace/mode/python")//set the language 
+                }
+                });
+                
+            </script>
+        </form>
+    </body>
+</html>
+
