@@ -77,14 +77,14 @@
                 // set init values or basic code for html
                 // e.session.setMode(new JavaScriptMode());
                        e.setValue(`print("Hello World!")`)
-                // make complie or run
+                // make compile or run
                 $(document).ready(function(){
                  $(document).on("click","#Clear",function(){
                    e.setValue("");
                  })
                 });
 
-		// On sumitting the form
+		// On submitting the form
                 $('#myform').on('submit', function(event){
                 event.preventDefault();  // Prevent from posting as HTML form
                 $.ajax({
